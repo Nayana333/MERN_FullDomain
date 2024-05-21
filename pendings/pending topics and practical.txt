@@ -1,0 +1,1006 @@
+parsing JSON data from url (fetch)
+- function to generate 6 digit OTP
+- filter strings from array ([1, 'two', 3, 'four', 5, true, 'six', 7];)
+- extract digits from string ("- +91 (990)-000-9999")
+- chunk array into subarrays of n elements
+- spread an object and add a new property
+- non repeating elements in array
+- date 15 days after today
+- print current time
+- cancel a setInterval after 2 seconds 
+- highest sum produced by adding two numbers
+- print combinations of two numbers that can add up to 8 in array
+- most repeating element
+- generator function that endlessly produces even numbers
+- longest word ("The quick brown fox jumps over the lazy gigantic dog")
+
+
+
+
+
+/////////////////////////////////////////////////////////
+
+
+function reverseStringRecursive(s) {
+    if (s === "") {
+        return "";
+    } else {
+        return reverseStringRecursive(s.slice(1)) + s[0];
+    }
+}
+
+// Test the function
+var inputString = "Rahul ranjan";
+var reversedString = reverseStringRecursive(inputString).split(" ").reverse().join(" ");
+console.log(reversedString);
+
+
+//////////////////////////////////////////////////////////////
+
+
+const arr=[8,12,5,23,11,15,7]   // output   ====[    11, 12, 5, 23 , 15, 7, 8]
+
+
+function sumOfArray(arr){
+    
+    return arr.map((num)=>{
+       const sum= num.toString().split('').reduce((acc,curr)=>acc+=parseInt(curr),0)
+       return {sum,num}
+    })
+  
+}
+function mergeSort(arr){
+    if(arr.length<2){
+        return arr
+    }
+    let mid=Math.floor(arr.length/2)
+    let left=arr.slice(0,mid)
+    let right=arr.slice(mid)
+    return merge(mergeSort(left),mergeSort(right))
+}
+
+function merge(left,right){
+    let sorted=[]
+    while(left.length&&right.length){
+        if(left[0].sum<=right[0].sum){
+            sorted.push(left.shift())
+        }else{
+            sorted.push(right.shift())
+        }
+    }
+    return[...sorted,...left,...right]
+} 
+
+function sort(arr){
+    let sum=sumOfArray(arr)
+    let sorted=mergeSort(sum)
+    return sorted.map((num)=>num.num)
+    
+}
+
+let result=sort(arr)
+console.log(result);
+
+
+//////////////////////////////////////////////////////////////
+
+
+
+
+import { useState, useEffect } from "react";
+
+function Counter() {
+    const [counter, setCounter] = useState(1); // Initialize counter to 1
+    const [isStarted, setIsStarted] = useState(false);
+    const [isIncrementing, setIsIncrementing] = useState(true);
+
+    useEffect(() => {
+        let intervalId;
+        if (isStarted) {
+            intervalId = setInterval(() => {
+                if (isIncrementing) {
+                    setCounter(prevCounter => (prevCounter < 10 ? prevCounter + 1 : 10));
+                    if (counter === 10) {
+                        setIsIncrementing(false);
+                    }
+                } else {
+                    setCounter(prevCounter => (prevCounter > 0 ? prevCounter - 1 : 0));
+                    if (counter === 1) {
+                        setIsIncrementing(true);
+                    }
+                }
+            }, 500);
+        } else {
+            clearInterval(intervalId);
+        }
+        return () => clearInterval(intervalId);
+    }, [isStarted, isIncrementing, counter]);
+
+    const handleStart = () => {
+        setIsStarted(true);
+    };
+
+    const handleStop = () => {
+        setIsStarted(false);
+    };
+
+    const handleDecrement = () => {
+        setIsStarted(false); // Stop auto increment/decrement when manual decrement is clicked
+        const decrementIntervalId = setInterval(() => {
+            setCounter(prevCounter => (prevCounter > 0 ? prevCounter - 1 : 0));
+            if (counter === 1) {
+                clearInterval(decrementIntervalId); // Stop the interval when counter reaches 0
+            }
+        }, 500);
+    };
+
+    return (
+        <div>
+            <p>Counter: {counter}</p>
+            <button onClick={handleStart} disabled={isStarted}>Start</button>
+            <button onClick={handleStop} disabled={!isStarted}>Stop</button>
+            <button onClick={handleDecrement} disabled={isStarted}>Decrement</button>
+        </div>
+    );
+}
+
+export default Counter;
+
+
+
+/////////////////////////////////////////////////////////
+
+
+
+
+const initialState ={
+    count : 0
+}
+
+const reducer = (state = initialState,action) =>{
+    switch(action.type){
+        case 'inc':
+            return {...state,
+                count: state.count < 5 ? state.count + 1 : state.count}
+            case 'dec':
+                return{...state,
+                    count:state.count > 0 ? state.count - 1 : state.count}
+            default :
+            return state
+    }
+
+}
+
+export default reducer
+
+
+
+////////////////////////////////////////////////////////
+
+
+
+function fetchData(callback) {
+  setTimeout(() => {
+    const data = "this is callback hell";
+    console.log(data);
+    callback(data);
+  }, 1000);
+}
+
+function toUppercase(data, callback) {
+  setTimeout(() => {
+    const newData = data.toUpperCase();
+    console.log(newData);
+    callback(newData);
+  }, 1000);
+}
+
+function reverse(data) {
+  setTimeout(() => {
+    const newData = data.split("").reverse().join("");
+    console.log(newData);
+  }, 1000);
+}
+
+fetchData(function (data1) {
+  toUppercase(data1, function (data2) {
+    reverse(data2);
+  });
+});
+
+//promise.......................
+
+async function fetchData(){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      const data= " 12345678"
+      resolve(data)
+    })
+  })
+}
+
+async function toUppercase(data){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      const newData=data.toUpperCase();
+      resolve(newData)
+    })
+  })
+}
+
+async function reverse(data){
+  return new Promise((resolve,reject)=>{
+    setTimeout(()=>{
+      const newData=data.split('').reverse().join("");
+      resolve(newData)
+    })
+  })
+}
+
+
+fetchData()
+.then((data1)=>toUppercase(data1))
+.then((data2)=>reverse(data2))
+.then((data3)=>{
+  console.log(data3);
+})
+
+async function example(){
+  try {
+    const data1=await fetchData()
+    const data2=await toUppercase(data1)
+    const data3=await reverse(data2)
+    console.log(data3);
+  } catch (error) {
+    console.log(error);
+  }
+}
+
+example()
+
+
+
+//////////////////////////////////////////////////
+
+
+
+const f1 = [
+    {
+        fruit: "Apple",
+        quantity: 5,
+        colors: ["Red", "Green"],
+    },
+    {
+        fruit: "Banana",
+        quantity: 8,
+        colors: ["Yellow"],
+    },
+    {
+        fruit: "Lemon",
+        quantity: 5,
+        colors: ["Yellow"],
+    },
+];
+
+const f2 = [
+    {
+        fruit: "Orange",
+        quantity: 3,
+        colors: ["Orange"],
+    },
+    {
+        fruit: "Grapes",
+        quantity: 12,
+        colors: ["Purple", "Green"],
+    },
+];
+
+reduce() to find total number of green fruits
+
+
+
+
+///////////////////////////////////////////////////////////
+
+
+fobonacci series
+constructor
+use strict
+event bubbling
+pagination
+transaction
+pagination
+cron job
+maxAge and Expires
+cluster and workers
+Horizontal scaling
+Costum hooks
+code spliting
+useContext() and redux
+suffix tree
+complete tree
+full tree 
+perfect tree
+
+
+
+//////////////////////////////////////////////////////////
+
+
+
+Process and Thread
+fs module
+object and object_id
+upsert
+$nin, $nor
+$lookup, $unwind"PendingTopics:
+$lookup
+min key and max key
+aggregation
+custom middlewares
+MVC Architecture
+npm commands
+static folder
+status codes
+backup and restore mongodb
+"Pending Topics:
+Missing JS basics
+Const let var difference
+Try to intiliase a const object
+Shallow copy vs deep copy
+== vs ===
+Hoisting
+Authentication vs Authorisation
+Event loop - Needs clarity
+Sharding  - Needs clarity 
+Replication - Needs clarity
+$lookups
+Relational vs non-relational difference
+Focus on JS basics (map,filter,foreach,reduce......)
+How to find the middle element of a linkedlist ?(apply 2 pointer logic
+	
+DOM
+Dynamically typed language
+Var
+Temporal dead zone, Break vs continue
+App.all(), journaling, 
+Rdbms vs nosql, Binary search
+Advantages of linked list
+Stack overflow vs underflow
+Quick sort, 
+Cover ds topics
+Count of vowels in a string - not done
+Practice JS Methods
+
+
+//////////////////////////////////////////////////////////////////
+
+
+
+
+Bitwise operators
+Closures 
+Async await structure 
+Classes and objects 
+Constructor
+How node js process request
+create collection
+min max avg
+update
+currying
+optional chaining
+rest
+stack workout
+binary search
+session state
+scope based for var let const
+setimmediate
+nexttick
+
+
+
+///////////////////////////////////////////////////////////////
+
+
+
+What is node.js,
+Features of node,
+Types of Streams,
+Core modules,
+types of middleware,
+Event loop,
+REPL,
+Event driven architecture,
+advantage of node ,
+npm ,
+npm init ,
+hosting ,
+variable type ,
+alternatives of express ,
+application middleware vs router level middle where ,
+example of all middlewares,
+static files ,
+CORS ,
+npm vs npx,
+event emitter ,
+what is packge.json ,
+other nodejs frameworks,
+generator function ,
+process. next tick ,
+error handling middleware and it's working ,
+buffer class, 
+piping ,
+error first callback,
+console. error vs console.warning ,
+event capturing ,
+
+server communication ,
+HTTP vs HTTPS ,
+HTTP methods ,
+request and response header, 
+middleware working,
+node blocking vs asynchronous,
+features of node event , 
+DNS module ,
+prosecc.env ,
+event loop ,
+libuv ,
+threadpool ,
+why single thread 
+feature of node ,
+scaffolding ,
+URL encoder ,
+body-parser,
+core modules ,
+session and cookies ,
+npm vs yarn ,
+MVC ,
+put and patch ,
+
+
+router. all,
+syntax parsing,
+Dev-dependencies and how to install them,
+res methods,
+setHeader vs writeHeader,
+fs module and its methods,
+PATCH & OPTIONS,
+3rd party middlewares and examples,
+Dynamic routing,
+Router chaining
+
+
+"- object declaration
+- hoisting
+- closure
+- string methods 
+- array methods
+- array/object copy
+- event loop
+- pure fn
+- higher order fn
+- promise API"
+
+
+"-double equals 
+-this function
+-spread operator
+- === and == difference
+-Var and let difference in scope
+-Boolean
+-TDZ
+-Call apply bind
+-Destructuring of object
+-Spread operator
+-This keyword"
+
+
+"Middlewares
+Error handling
+Cors
+Put/patch
+Options method/ preflight
+Streams/buffer
+Events
+How do you serve static files in Express.js?
+Rest apis
+Websocket
+Caching
+
+
+"Pending Topics:
+Middleware types
+ how to set cors 
+structure of http request
+path and query parameters
+
+
+"Pending Topics
+capped collection
+namespace
+logical and comparison operators in mongo db
+$all vs $in
+upsert
+$addToSet
+distinct()
+GridFs
+
+
+
+Process and Thread
+fs module
+object and object_id
+upsert
+$nin, $nor
+$lookup, $unwind
+backup and restore mongodb
+
+
+$lookup
+min key and max key
+aggregation
+custom middlewares
+MVC Architecture
+npm commands
+static folder
+status codes
+
+
+////////////////////////////////////////////////////////////
+
+
+
+"Pending Topics:
+- counter app (react)
+- useEffect and depandancy array
+- cleanup fun
+- Fragment
+- pure componnet
+
+- array sum (reduce)
+- array duplicate (Set, filter)
+- ['js','react'] ->  {
+            js: true,
+            react: true
+          }
+- print keys from obj (for in)
+- empty object (Object.keys())
+- typeof [] -> object
+- isArray
+- IIFE
+- cancel setInterval
+
+- error middleware
+- dynamic routing, req.params
+
+- $expr
+- capped collection
+- $project
+
+- fibonacci
+- n!
+- anagram
+Score
+Theory: 3.5
+Code: 4"
+
+
+////////////////////////////////////////////////////
+
+"map
+filter
+forEach
+deepcopy
+nullish operator
+turney operator with multiple
+throttling
+deboucing
+trikkling
+event flow
+type of events
+synthetic event
+native events
+window vs document
+promisify
+explicit  type casting
+implicit type casting
+function composition
+
+options methods
+preflight
+cors working
+error middleware
+multiple query parameters
+write head
+set head
+mocking
+controll flow functions
+router chaining
+concurrency
+
+Find documents from the ""orders""
+collection where the ""items"" array size is greater than or equal to 3.
+
+Get avg year in the doc
+all 
+in
+elemMatch
+bulk write
+batch sizing
+sharding working
+transactions example
+auto scaling
+gridFS working
+
+class components 
+functional components
+phases in lifecycle
+async in the callback of useEffect
+event pooling
+barel import
+error boundries
+rules of hooks
+contitional rendering of hook.
+keys
+webAPI
+pure component
+inpure component
+controlled and uncontrolled compon
+statless component
+
+string 
+array and linked list complexity
+wighted graph
+degenerate tree
+perfect hashing
+avoid collition
+
+
+///////////////////////////////////////////////////////////
+
+
+"Postponed to one week to cover topics
+(13-july-2023 to 20-july-2023)
+escape sequence
+Literals
+Optional Chaining Operator
+nullish coalescing operator (??)
+Generator Function
+first-class function
+pure function
+Set()
+internal or implicit type casting
+external and explicit type casting
+Event Bubbling
+Event Propagation
+Promise.race()
+spread operator (...) and rest parameters
+res.sent() and res.write()
+res.render()
+Statically vs Dynamically typed
+pagination
+app.all
+transaction
+embedded document
+views
+type indexes
+atomic operation
+Capped Collection
+GridFS
+CAP Theorem
+strict mode
+React Router
+React.Fragment
+React.Profiler
+lazy loading in react
+React.PureComponent
+Render Props
+Thunk
+Quadratic Probing
+Linear Probing
+Double Hashing
+load factor
+stack under flow
+complete tree
+full tree 
+perfect tree
+general purpose tree
+AVL tree
+find right child element in heap
+find left child element in heap
+find parent child element in heap
+graph indexing
+Minimum Spanning tree
+Spanning tree
+Theory-3
+Coding-5"
+
+
+
+////////////////////////////////////////////////////
+
+
+
+"Topics to be covered:
+Last week
+-Difference btw cookies and session
+-Slicing and spicing
+-Call apply blind 
+-Package.json
+-Package-lock
+-Session
+-Slice & splice
+-Call apply bind
+-Router
+-Render
+-Npm install
+Complete all the topics with next week.
+This week pending topics:
+$nin
+increment and decrement operator in mongo DB
+$pull
+$all
+Look Up
+Sharding
+replica set.
+pretty()
+pros and cons of indexing
+ACID properties"
+
+
+///////////////////////////////////////////////////////////
+
+
+
+"Week 19 repeat
+
+Pending Topics :
+
+- Different NoSql databases
+- Different types indexes
+- Why closures
+- Worker threads
+- Session authentication vs JWT authentication
+- Session stores
+- Why does react use a Virtual DOM
+- Redux vs Context api
+- react strict mode
+- Memory leak
+- Heap
+- Trie
+- DFS vs BFS
+
+
+////////////////////////////////////////////////////////
+
+
+
+Pending Topics:
+
+IIFE syntax
+generator function practical
+Weakset
+Weakmap
+Object.seal
+prototype pollution
+Proxy object
+constructor function
+function composition
+nullish operator
+Promise.race vs Promise.any
+flatMap
+
+threadpool
+event driven programming
+spawn vs fork
+exec
+execFile
+app.locals
+Rate limiting
+content negotiation
+OPTIONS method
+EventEmitter
+
+axios cancelToken
+react.memo
+dynamic import
+useLayoutEffect
+Shadow DOM
+HTML sanitization
+native events
+transpiler
+deadcode elimination
+
+Hashed indexing
+TTL index
+database profiler
+covered query
+clustered collection
+$merge
+$facet
+$elemMatch
+$addToSet
+single purpose aggregation
+$pullAll
+$out
+Aggregate practicsls
+
+segment tree
+double hashing
+load factor
+monotonic stack
+Serialize a binary tree
+Tarjan’s algorithm
+double ended queue
+linear probing
+quadratic probing
+Open addressing
+Separate Chaining
+suffix tree
+Red-Black Tree
+AVL tree
+Sparse array
+Jagged array
+Divide and conquer technique
+
+JS - 3
+Node - 4
+React - 4
+Mongodb - 3
+DS - 2
+
+Theory: 3
+Practical: 3
+
+
+//////////////////////////////////////////////////
+
+
+
+ending Topics:
+
+IIFE syntax
+generator function practical
+Weakset
+Weakmap
+Object.seal
+prototype pollution
+Proxy object
+constructor function
+function composition
+nullish operator
+Promise.race vs Promise.any
+flatMap
+
+threadpool
+event driven programming
+spawn vs fork
+exec
+execFile
+app.locals
+Rate limiting
+content negotiation
+OPTIONS method
+EventEmitter
+
+axios cancelToken
+react.memo
+dynamic import
+useLayoutEffect
+Shadow DOM
+HTML sanitization
+native events
+transpiler
+deadcode elimination
+
+Hashed indexing
+TTL index
+database profiler
+covered query
+clustered collection
+$merge
+$facet
+$elemMatch
+$addToSet
+single purpose aggregation
+$pullAll
+$out
+Aggregate practicsls
+
+segment tree
+double hashing
+load factor
+monotonic stack
+Serialize a binary tree
+Tarjan’s algorithm
+double ended queue
+linear probing
+quadratic probing
+Open addressing
+Separate Chaining
+suffix tree
+Red-Black Tree
+AVL tree
+Sparse array
+Jagged array
+Divide and conquer technique
+
+JS - 3
+Node - 4
+React - 4
+Mongodb - 3
+DS - 2
+
+Theory: 3
+Practical: 3
+
+
+//////////////////////////////////////////////////////
+
+
+
+JavaScript:-
+callback hell
+promise
+promise.any Vs promise.all
+MicroTask queue
+process.nextTick()
+prototype
+prototypal inheritance
+practical-5, theory-5
+
+Node:-
+cluster
+pipe
+I/O in node
+thread pool
+practical-5, theory-5
+
+React:-
+DOM manupulation in react
+how to avid render the child if parent is render
+throttle and debouncing
+disadvantage of redux
+useMemo Vs React.memo
+take nested object as input and create nested dropdown
+useLayoutEffect
+practical-3, theory-6
+
+DSA:-
+disadvantage of recursionT
+reverse the string using recursion
+reverse the string using stack
+sort the array of string
+find the element from array of string using binary search
+
+
+practical-4,
+theory-5
+
+
+//////////////////////////////////////////////////////////////
+
+
+DOM manipulation methods
+callback
+explicit type casting
+JSON methods
+local storage vs session storage
+examples for HOF
+examples for JS engine
+REPL
+core modules in node.js
+CORS
+streams in node.js
+fork()
+spawn()
+delete a file using fs
+$expr
+error handling in React
+core principles of Redux
+redux store methods
+disadvantages of recursion
+time complexity of binary search
+balanced tree
+
+////////////////////////////////////////////////////
